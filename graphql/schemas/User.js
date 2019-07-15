@@ -89,7 +89,7 @@ const AddUser = {
     }
     return User.create(args)
       .then(() => User.findOrCreate({ where: { email: args.email } }))
-      .then(([user, created]) => {
+      .then(([user, _]) => {
         return user.get({ plain: true });
       })
       .catch(error => {
