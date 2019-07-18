@@ -9,25 +9,58 @@ const { Leads } = require("../../models");
 
 const LeadField = {
   type: LeadType,
-  description: "Single lead",
+  description: "A single Lead that you have access to",
   args: {
     firstName: { type: GraphQLString },
     lastName: { type: GraphQLString },
     email: { type: GraphQLString },
     phone: { type: GraphQLString }
   },
-  resolve: (_, args) => Leads.findOne({ where: args })
+  resolve: (_, args, context) => {
+    if (!context.user) {
+      throw new Error("You have to be logged in");
+    }
+    const yourLeads = context.user.Leads.filter(lead => {
+      let temp = false;
+      Object.keys(args).forEach(key => {
+        if (args[key] === lead[key]) {
+          temp = true;
+        }
+      });
+      return temp && lead;
+    });
+    return yourLeads[0];
+  }
 };
 const LeadsField = {
   type: new GraphQLList(LeadType),
-  description: "List of all leads",
+  description: "All your Leads",
   args: {
     firstName: { type: GraphQLString },
     lastName: { type: GraphQLString },
     email: { type: GraphQLString },
     phone: { type: GraphQLString }
   },
-  resolve: (_, args) => Leads.findAll({ where: args })
+  resolve: (_, args, context) => {
+    if (!context.user) {
+      throw new Error("You have to be logged in");
+    }
+    console.log(args);
+    if (Object.keys(args).length === 0) {
+      return context.user.Leads;
+    }
+    const yourLeads = context.user.Leads.filter(lead => {
+      let temp = false;
+      Object.keys(args).forEach(key => {
+        if (args[key] === lead[key]) {
+          temp = true;
+        }
+      });
+      return temp && lead;
+    });
+    console.log(yourLeads);
+    return yourLeads;
+  }
 };
 
 const AddLead = {
@@ -39,7 +72,10 @@ const AddLead = {
     email: { type: GraphQLNonNull(GraphQLString) },
     phone: { type: GraphQLNonNull(GraphQLString) }
   },
-  resolve: (_, args) => {
+  resolve: (_, context, args) => {
+    if (!context.user) {
+      throw new Error("You have to be logged in");
+    }
     return Leads.create(args)
       .then(() => Leads.findOrCreate({ where: args }))
       .then(([lead, created]) => {

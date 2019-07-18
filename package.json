@@ -9,6 +9,8 @@
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^1.6.5",
     "nodemon": "^1.19.1",
+    "passport": "^0.4.0",
+    "passport-http-bearer": "^1.0.1",
     "sequelize": "^5.9.4",
     "sequelize-cli": "^5.5.0"
   },

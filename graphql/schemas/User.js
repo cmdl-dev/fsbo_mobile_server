@@ -11,47 +11,42 @@ const UserField = {
   description: "Single User",
   args: {
     email: { type: GraphQLString },
-    password: { type: GraphQLString },
-    token: { type: GraphQLString }
+    password: { type: GraphQLString }
   },
   resolve: (_, args) => {
-    if (args.hasOwnProperty("token")) {
-      return User.findOne({ where: { token: args.token } });
-    } else {
-      if (!args.hasOwnProperty("email") && !args.hasOwnProperty("password")) {
-        throw new Error("Please include Email and passsword");
-      }
-      if (args.hasOwnProperty("email") || args.hasOwnProperty("password")) {
-        throw new Error(
-          !args.hasOwnProperty("email")
-            ? "Please provide an Email"
-            : "Please provide a Password"
-        );
-      }
-      return User.findOne({ where: { email: args.email } })
-        .then(user => {
-          if (user) {
-            const userObj = user.get({ plain: true });
-            return Promise.all([
-              Promise.resolve(userObj),
-              bycrpt.compare(args.password, userObj.password)
-            ]);
-          } else {
-            throw new Error("That user does not exist");
-          }
-        })
-        .then(([userObj, result]) => {
-          if (result) {
-            return userObj;
-          } else {
-            throw new Error("That password does not match");
-          }
-        })
-        .catch(error => {
-          console.log(error);
-          throw new Error(error);
-        });
+    if (!args.hasOwnProperty("email") && !args.hasOwnProperty("password")) {
+      throw new Error("Please include Email and passsword");
     }
+    if (!args.hasOwnProperty("email") || !args.hasOwnProperty("password")) {
+      throw new Error(
+        !args.hasOwnProperty("email")
+          ? "Please provide an Email"
+          : "Please provide a Password"
+      );
+    }
+    return User.findOne({ where: { email: args.email } })
+      .then(user => {
+        if (user) {
+          const userObj = user.get({ plain: true });
+          return Promise.all([
+            Promise.resolve(userObj),
+            bycrpt.compare(args.password, userObj.password)
+          ]);
+        } else {
+          throw new Error("That user does not exist");
+        }
+      })
+      .then(([userObj, result]) => {
+        if (result) {
+          return userObj;
+        } else {
+          throw new Error("That password does not match");
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        throw new Error(error);
+      });
   }
 };
 const UsersField = {
