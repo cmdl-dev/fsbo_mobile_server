@@ -14,6 +14,10 @@ module.exports = {
       UserId: {
         type: Sequelize.INTEGER
       },
+      phase: {
+        type: Sequelize.INTEGER,
+        defaultValue: 1
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

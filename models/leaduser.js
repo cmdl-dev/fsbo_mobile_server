@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     "lead_user",
     {
       LeadId: DataTypes.INTEGER,
-      UserId: DataTypes.INTEGER
+      UserId: DataTypes.INTEGER,
+      phase: DataTypes.INTEGER
     },
     {
       freezeTableName: true

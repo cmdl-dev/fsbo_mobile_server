@@ -53,8 +53,8 @@ const connectUserAndLeads = async () => {
 };
 
 (async function() {
-  //   await createUsers();
-  //   await createHouse();
-  //   await createLeads();
+  await createUsers();
+  await createHouse();
+  await createLeads();
   await connectUserAndLeads();
 })();

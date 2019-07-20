@@ -2,7 +2,12 @@ const { GraphQLSchema, GraphQLObjectType } = require("graphql");
 
 const { UserField, UsersField, AddUser } = require("./schemas/User");
 const { HouseField, HousesField, AddHouse } = require("./schemas/House");
-const { LeadField, LeadsField, AddLead } = require("./schemas/Lead");
+const {
+  LeadField,
+  LeadsField,
+  AddLead,
+  ChangeLead
+} = require("./schemas/Lead");
 
 const RootQueryType = new GraphQLObjectType({
   name: "Query",
@@ -22,7 +27,8 @@ const RootMutationType = new GraphQLObjectType({
   fields: () => ({
     AddUser: { ...AddUser },
     AddHouse: { ...AddHouse },
-    AddLead: { ...AddLead }
+    AddLead: { ...AddLead },
+    ChangeLead: { ...ChangeLead }
   })
 });
 exports.schema = new GraphQLSchema({
