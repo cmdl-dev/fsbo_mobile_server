@@ -74,6 +74,7 @@ const ChangeLead = {
     }
     // Get the lead from your context leads,
     const yourLead = context.user.Leads.filter(lead => lead.id === args.id)[0];
+    // Update the lead to the new phase
     return lead_user
       .update(
         { phase: args.to },
@@ -88,10 +89,6 @@ const ChangeLead = {
       .catch(error => {
         throw new Error(error);
       });
-    // We have your lead information
-    // Now we have to find that lead in the pivot table
-
-    // console.log(yourLeads.get({ plain: true }));
   }
 };
 const AddLead = {
@@ -103,7 +100,7 @@ const AddLead = {
     email: { type: GraphQLNonNull(GraphQLString) },
     phone: { type: GraphQLNonNull(GraphQLString) }
   },
-  resolve: (_, context, args) => {
+  resolve: (_, args, context) => {
     if (!context.user) {
       throw new Error("You have to be logged in");
     }
