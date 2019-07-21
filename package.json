@@ -1,14 +1,18 @@
 {
   "dependencies": {
     "bcrypt": "^3.0.6",
+    "bluebird": "^3.5.5",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "express-graphql": "^0.8.0",
+    "faker": "^4.1.0",
     "graphql": "^14.4.2",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^1.6.5",
     "nodemon": "^1.19.1",
+    "passport": "^0.4.0",
+    "passport-http-bearer": "^1.0.1",
     "sequelize": "^5.9.4",
     "sequelize-cli": "^5.5.0"
   },

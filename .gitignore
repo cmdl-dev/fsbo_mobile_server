@@ -7,7 +7,7 @@ config/config.json
 ######################################################################
 ## STUFF TO CUSTOMIZE - you probably don't want all of these.
 ######################################################################
-
+*.org
 ## node.js
 node_modules
 lib-cov

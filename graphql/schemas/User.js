@@ -1,34 +1,29 @@
-const {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLList,
-  GraphQLInt,
-  GraphQLNonNull
-} = require("graphql");
+const { GraphQLString, GraphQLList, GraphQLNonNull } = require("graphql");
+const { UserType } = require("./Types");
 const bycrpt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { User } = require("../../models");
 
-exports.UserType = new GraphQLObjectType({
-  name: "User",
-  description: "User of the platform",
-  fields: () => ({
-    id: { type: GraphQLNonNull(GraphQLInt) },
-    firstName: { type: GraphQLNonNull(GraphQLString) },
-    lastName: { type: GraphQLNonNull(GraphQLString) },
-    email: { type: GraphQLNonNull(GraphQLString) },
-    token: { type: GraphQLNonNull(GraphQLString) }
-  })
-});
+//TODO: add params for Users
 
-exports.UserField = {
-  type: this.UserType,
+const UserField = {
+  type: UserType,
   description: "Single User",
   args: {
     email: { type: GraphQLString },
     password: { type: GraphQLString }
   },
   resolve: (_, args) => {
+    if (!args.hasOwnProperty("email") && !args.hasOwnProperty("password")) {
+      throw new Error("Please include Email and passsword");
+    }
+    if (!args.hasOwnProperty("email") || !args.hasOwnProperty("password")) {
+      throw new Error(
+        !args.hasOwnProperty("email")
+          ? "Please provide an Email"
+          : "Please provide a Password"
+      );
+    }
     return User.findOne({ where: { email: args.email } })
       .then(user => {
         if (user) {
@@ -54,14 +49,14 @@ exports.UserField = {
       });
   }
 };
-exports.UsersField = {
-  type: GraphQLList(this.UserType),
+const UsersField = {
+  type: new GraphQLList(UserType),
   description: "List of all users",
-  resolve: async () => await User.findAll()
+  resolve: () => User.findAll()
 };
 
-exports.AddUser = {
-  type: this.UserType,
+const AddUser = {
+  type: UserType,
   description: "Add a User",
   args: {
     firstName: { type: GraphQLNonNull(GraphQLString) },
@@ -89,7 +84,7 @@ exports.AddUser = {
     }
     return User.create(args)
       .then(() => User.findOrCreate({ where: { email: args.email } }))
-      .then(([user, created]) => {
+      .then(([user, _]) => {
         return user.get({ plain: true });
       })
       .catch(error => {
@@ -97,4 +92,10 @@ exports.AddUser = {
         throw Error("That account already exists");
       });
   }
+};
+module.exports = {
+  UserType,
+  UserField,
+  UsersField,
+  AddUser
 };
